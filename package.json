@@ -1,6 +1,6 @@
 {
   "name": "golink-gh-pages",
-  "version": "0.0.1",
+  "version": "1.20190711.1",
   "description": "A simple static url shortner hosted on github pages.",
   "main": "main.js",
   "repository": "https://github.com/poifuture/golink-gh-pages.git",
