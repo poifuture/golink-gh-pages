@@ -1,3 +1,7 @@
+# developing
+.tmp
+
+##### From Github
 # Logs
 logs
 *.log

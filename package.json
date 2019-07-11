@@ -1,0 +1,27 @@
+{
+  "name": "golink-gh-pages",
+  "version": "0.0.1",
+  "description": "A simple static url shortner hosted on github pages.",
+  "main": "main.js",
+  "repository": "https://github.com/poifuture/golink-gh-pages.git",
+  "author": "Nagi <nagi@poifuture.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc && cp src/*.html lib/",
+    "start": "yarn build && mkdir -p .tmp && cd .tmp && ../main.js && serve docs",
+    "clean-start": "yarn clean && yarn start",
+    "clean": "rm -rf .tmp"
+  },
+  "devDependencies": {
+    "@types/json5": "^0.0.30",
+    "@types/node": "^12.6.2",
+    "serve": "^11.1.0",
+    "typescript": "^3.5.3",
+    "webpack": "^4.35.3",
+    "webpack-cli": "^3.3.5",
+    "webpack-dev-server": "^3.7.2"
+  },
+  "dependencies": {
+    "json5": "^2.1.0"
+  }
+}
