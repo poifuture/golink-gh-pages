@@ -1,27 +1,30 @@
 <script>
   var key = location.pathname.match(/^[/]([^/]*)[/]?.*$/)[1]
-  var remain = location.href.substring(
-    window.location.origin.length + key.length + 1
-  )
-  /* fuzzy start */
-  key = key.replace(/[^a-zA-Z0-9]*/g, "").toLowerCase()
-  /* fuzzy end */
-  console.log("input: ", key, remain)
-  fetch("/entry/" + key)
-    .then(function(response) {
-      if (!response.ok) {
-        throw response
-      }
-      return response.text()
-    })
-    .then(function(text) {
-      console.log("target: ", text)
-      window.location = text + remain
-    })
-    .catch(function(error) {
-      console.error(error)
-      /* unsafe start */
-      /* unsafe end */
-    })
+  var remain = location.href.substring(location.origin.length + key.length + 1)
+  if (key === "") {
+    // homepage jump
+  } else {
+    /* fuzzy start */
+    key = key.replace(/[^a-zA-Z0-9]*/g, "").toLowerCase()
+    /* fuzzy end */
+    console.log("input: ", key, remain)
+    fetch("/entry/" + key)
+      .then(function(response) {
+        if (!response.ok) {
+          throw response
+        }
+        return response.text()
+      })
+      .then(function(text) {
+        console.log("target: ", text)
+        location = text + remain
+      })
+      .catch(function(error) {
+        console.error(error)
+        /* unsafe start */
+        // TODO: Fetch all entries in client side
+        /* unsafe end */
+      })
+  }
 </script>
 Entry Not Found

@@ -1,4 +1,5 @@
 import fs from "fs"
+import rimraf from "rimraf"
 import JSON5 from "json5"
 
 const getFuzzyKey = (key: string): string => {
@@ -6,9 +7,11 @@ const getFuzzyKey = (key: string): string => {
 }
 
 interface ConfigType {
+  cleanStart: boolean
   fuzzy: boolean
   jekyll301: boolean
   unsafe: boolean
+  homepage: string
 }
 interface RichEntryType {
   fuzzyKey: string
@@ -16,9 +19,11 @@ interface RichEntryType {
 }
 
 const DefaultConfig: ConfigType = {
+  cleanStart: false,
   fuzzy: true,
   jekyll301: false,
   unsafe: false,
+  homepage: "https://github.com/poifuture/golink-gh-pages",
 }
 
 const ConfigPath = "golink.config.json"
@@ -34,13 +39,7 @@ const resolveConfig = (): ConfigType => {
   return config
 }
 
-const initDocs = ({
-  fuzzy = true,
-  unsafe = false,
-}: {
-  fuzzy?: boolean
-  unsafe?: boolean
-}) => {
+const initRepo = () => {
   if (!fs.existsSync("entries.json")) {
     fs.writeFileSync(
       "entries.json",
@@ -54,21 +53,50 @@ const initDocs = ({
       )
     )
   }
+  if (!fs.existsSync(".circleci")) {
+    fs.mkdirSync(".circleci")
+  }
+  if (!fs.existsSync(".circleci/config.yml")) {
+    fs.copyFileSync(__dirname + "/.circleci/config.yml", ".circleci/config.yml")
+  }
+}
+
+const initDocs = ({
+  cleanStart = DefaultConfig.cleanStart,
+  fuzzy = DefaultConfig.fuzzy,
+  unsafe = DefaultConfig.unsafe,
+  homepage = DefaultConfig.homepage,
+}: {
+  cleanStart?: boolean
+  fuzzy?: boolean
+  unsafe?: boolean
+  homepage?: string
+}) => {
+  if (cleanStart) {
+    if (fs.existsSync("docs")) {
+      rimraf.sync("docs")
+    }
+  }
   if (!fs.existsSync("docs")) {
     fs.mkdirSync("docs")
   }
   if (!fs.existsSync("docs/entry")) {
     fs.mkdirSync("docs/entry")
-    fs.writeFileSync("docs/entry/google", "https://www.google.com")
   }
-  let homeHtml = fs.readFileSync(__dirname + "/template.html", "utf8")
+  let templateHtml = fs.readFileSync(__dirname + "/template.html", "utf8")
   if (fuzzy !== true) {
-    homeHtml = homeHtml.replace(/fuzzy start(.|\n)*fuzzy end/gm, "")
+    templateHtml = templateHtml.replace(/fuzzy start(.|\n)*fuzzy end/gm, "")
   }
   if (unsafe !== true) {
-    homeHtml = homeHtml.replace(/unsafe start(.|\n)*unsafe end/gm, "")
+    templateHtml = templateHtml.replace(/unsafe start(.|\n)*unsafe end/gm, "")
   }
-  fs.writeFileSync("docs/index.html", homeHtml)
+  if (homepage) {
+    templateHtml = templateHtml.replace(
+      "// homepage jump",
+      `location = "${homepage}"`
+    )
+  }
+  fs.writeFileSync("docs/index.html", templateHtml)
 }
 
 const resolveRichEntries = ({
@@ -160,7 +188,13 @@ const github404Hack = () => {
 
 export default async () => {
   const config: ConfigType = resolveConfig()
-  initDocs({ fuzzy: config.fuzzy, unsafe: config.unsafe })
+  initRepo()
+  initDocs({
+    cleanStart: config.cleanStart,
+    fuzzy: config.fuzzy,
+    unsafe: config.unsafe,
+    homepage: config.homepage,
+  })
   const richEntries = resolveRichEntries({ fuzzy: config.fuzzy })
   await buildEntries(richEntries, { fuzzy: config.fuzzy })
   if (config.jekyll301) {
