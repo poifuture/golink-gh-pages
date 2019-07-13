@@ -1,6 +1,7 @@
 import fs from "fs"
 import rimraf from "rimraf"
 import JSON5 from "json5"
+import installlocal from "./installlocal"
 
 const getFuzzyKey = (key: string): string => {
   return key.replace(/[^a-zA-Z0-9]*/g, "").toLowerCase()
@@ -186,7 +187,7 @@ const github404Hack = () => {
   )
 }
 
-export default async () => {
+const build = async () => {
   const config: ConfigType = resolveConfig()
   initRepo()
   initDocs({
@@ -201,4 +202,19 @@ export default async () => {
     await buildJekyll(richEntries)
   }
   github404Hack()
+}
+
+export default () => {
+  console.log(process.argv)
+  if (process.argv[2] === "install-local") {
+    installlocal(process.argv[3])
+    return
+  }
+  build()
+    .then(function() {
+      console.log("Golink build done.")
+    })
+    .catch(function(error) {
+      console.error(error)
+    })
 }
