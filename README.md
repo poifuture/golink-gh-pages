@@ -106,14 +106,31 @@ Continuous delivery is used to build the entry when anyone is modifing
 All you need to do is enabling your repo in Circle CI and grant write/push
 permission.
 
-**The default setup is dangerous, check Circle CI for safer setup.**
+**The user key setup is dangerous, check Circle CI docs for r/w deploy key.**
 
 Grant Circle CI a user key at Circle CI -> Settings -> Permissons -> SSH Keys
 
-### Set up local dns for "go" TLD
+### Set up a local redirect server for "go" TLD
 
-This convinient setup will unlock your productivity by typing go/link in the
-browser. See how [Google does][history].
+This convinient setup will unlock your productivity significantly. You'll be
+able to access the doc you remember in your brain by simply typing
+`go/an-awesome-doc` in the browser. See a great document by
+[golinks.io][history]. To set up, simply run
+
+```bash
+npx golink-gh-pages install-local
+```
+
+> Note: This set up will occupy your port 80 forever.
+
+Restart workstation to let startup process start the server. And try simply
+typing go/google in your browser. (Enter http qualified path for the first time,
+http://go/google). You are all set!
+
+The installation will create "~/golink-local.js", a 3-line pure nodejs redirect
+server. Then add a startup registry to run this server at port 80. Finally, the
+installation will write a "go" TLD entry to 127.0.0.1, which allows the browser
+to redirect the "go" domain same as "localhost"
 
 ## Config
 
@@ -130,6 +147,11 @@ all symbols will be ignored. (e.g. `go/MyGReatBLOg5` can hit the
 `jekyll301` (default `false`): Generate jekyll front matters to do 301
 redirection. This will improve the redirection performance in github pages. But
 it doesn't pass the query string to the targeted site.
+
+## Alternatives
+
+[golinks.io][golinks.io] is a reliable SaaS platform to provide the golinks to
+advanced users.
 
 ## Credits
 
