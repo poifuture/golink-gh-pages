@@ -118,7 +118,7 @@ able to access the doc you remember in your brain by simply typing
 [golinks.io][history]. To set up, simply run
 
 ```bash
-npx golink-gh-pages install-local
+npx golink-gh-pages install-local https://go.yourdomain.com
 ```
 
 > Note: This set up will occupy your port 80 forever.

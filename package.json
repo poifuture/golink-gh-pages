@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "json5": "^2.1.0",
+    "node-fetch": "^2.6.0",
     "rimraf": "^2.6.3"
   }
 }

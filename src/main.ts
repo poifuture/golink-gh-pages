@@ -1,7 +1,7 @@
 import fs from "fs"
 import rimraf from "rimraf"
 import JSON5 from "json5"
-import installlocal from "./installlocal"
+import LocalProxy from "./local-proxy"
 
 const getFuzzyKey = (key: string): string => {
   return key.replace(/[^a-zA-Z0-9]*/g, "").toLowerCase()
@@ -205,8 +205,8 @@ const build = async () => {
 }
 
 export default () => {
-  if (process.argv[2] === "install-local") {
-    installlocal(process.argv[3])
+  if (process.argv[2] === "install-local-dns") {
+    LocalProxy.install(process.argv[3])
     return
   }
   build()
