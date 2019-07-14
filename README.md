@@ -196,6 +196,7 @@ advanced users.
 
 Huge appreciation to [Google internal golinks][history]
 
+[golinks.io]: https://www.golinks.io
 [nodejs]: https://nodejs.org/
 [history]:
   https://medium.com/@golinks/the-full-history-of-go-links-and-the-golink-system-cbc6d2c8bb3
