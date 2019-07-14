@@ -1,8 +1,9 @@
 import fs from "fs"
 import rimraf from "rimraf"
 import JSON5 from "json5"
-import LocalProxy from "./local-proxy"
+import stringify from "json-stable-stringify"
 import { execSync } from "child_process"
+import LocalProxy from "./local-proxy"
 
 const getFuzzyKey = (key: string): string => {
   return key.replace(/[^a-zA-Z0-9]*/g, "").toLowerCase()
@@ -25,14 +26,14 @@ const DefaultConfig: ConfigType = {
   fuzzy: true,
   jekyll301: false,
   unsafe: false,
-  homepage: "https://github.com/poifuture/golink-gh-pages",
+  homepage: "https://github.com/poifuture/golink-gh-pages/",
 }
 
 const ConfigPath = "golink.config.json"
 
 const resolveConfig = (): ConfigType => {
   if (!fs.existsSync(ConfigPath)) {
-    const defaultConfigString = JSON.stringify(DefaultConfig, null, 2)
+    const defaultConfigString = stringify(DefaultConfig, { space: 2 })
     fs.writeFileSync(ConfigPath, defaultConfigString)
   }
   const configString: string = fs.readFileSync(ConfigPath, "utf8")
@@ -45,7 +46,7 @@ const initRepo = () => {
   if (!fs.existsSync("package.json")) {
     fs.writeFileSync(
       "package.json",
-      JSON.stringify(
+      stringify(
         {
           scripts: {
             build: "golink",
@@ -56,8 +57,7 @@ const initRepo = () => {
             serve: "^11.1.0",
           },
         },
-        null,
-        2
+        { space: 2 }
       )
     )
     execSync("npm init -y")
@@ -65,13 +65,13 @@ const initRepo = () => {
   if (!fs.existsSync("entries.json")) {
     fs.writeFileSync(
       "entries.json",
-      JSON.stringify(
+      stringify(
         {
-          google: "https://www.google.com",
-          "google-maps": "https://maps.google.com",
+          google: "https://www.google.com/",
+          "google-maps": "https://maps.google.com/",
+          youtube: "https://www.youtube.com/",
         },
-        null,
-        2
+        { space: 2 }
       )
     )
   }
@@ -121,17 +121,20 @@ const initDocs = ({
   fs.writeFileSync("docs/index.html", templateHtml)
 }
 
+const sortEntries = () => {
+  const entriesString = fs.readFileSync("entries.json", "utf8")
+  const entries = JSON5.parse(entriesString)
+
+  fs.writeFileSync("entries.json", stringify(entries, { space: 2 }))
+  return entries
+}
+
 const resolveRichEntries = ({
   fuzzy = true,
 }: {
   fuzzy: boolean
 }): { [s: string]: RichEntryType } => {
-  const entriesString = fs.existsSync("entries.json5")
-    ? fs.readFileSync("entries.json5", "utf8")
-    : fs.existsSync("entries.json")
-    ? fs.readFileSync("entries.json", "utf8")
-    : ""
-  const entries = JSON5.parse(entriesString)
+  const entries = sortEntries()
   const richEntries = {}
   const fuzzyPointers = {}
   for (const key in entries) {

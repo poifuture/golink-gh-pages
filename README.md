@@ -15,7 +15,9 @@ repo access won't see the data.
   - [go/google](http://go/google)
   - [go/youtube/NasyGUeNMTs](http://go/youtube/NasyGUeNMTs)
 
-Live demo is located at http://go-l.ink/github-golink-demo
+The repo of package is located at http://go-l.ink/golink
+
+The repo of live demo is located at http://go-l.ink/golink-demo
 
 ## Why github pages
 
@@ -60,14 +62,15 @@ Add your entry in `entries.json`
 
 ```json
 {
-  "g": "https://www.google.com/",
+  "G": "https://www.google.com/",
   "YT": "https://www.youtube.com/watch?v="
 }
 ```
 
 > Note the tailing slash "/" is important. It allows `go/g/search?q=123` to be
 > translated to `https://www.google.com/search?q=123`. Without tailing slash, it
-> will become `https://www.google.comsearch?q=123`
+> will become `https://www.google.comsearch?q=123`. You'll have to type
+> `go/g//search?q=123`.
 
 Then rebuild the project. New static entries will be created in the docs folder.
 
