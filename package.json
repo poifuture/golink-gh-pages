@@ -1,19 +1,22 @@
 {
   "name": "golink-gh-pages",
-  "version": "1.20190714.1",
+  "version": "1.20190714.2",
   "description": "A simple static url shortner hosted on github pages.",
   "main": "./main.js",
   "bin": {
     "golink": "./main.js"
   },
-  "repository": "https://github.com/poifuture/golink-gh-pages.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/poifuture/golink-gh-pages.git"
+  },
   "author": "Nagi <nagi@poifuture.com>",
   "license": "MIT",
   "scripts": {
     "build": "tsc && cp src/*.html lib/ && cp -r src/.circleci lib/",
-    "start": "yarn build && mkdir -p .tmp && cd .tmp && ../main.js && serve docs",
+    "start": "yarn build && mkdir -p tmp && cd tmp && ../main.js && serve docs",
     "clean-start": "yarn clean && yarn start",
-    "clean": "rm -rf .tmp"
+    "clean": "rm -rf tmp"
   },
   "devDependencies": {
     "@types/json5": "^0.0.30",
@@ -26,8 +29,17 @@
     "webpack-dev-server": "^3.7.2"
   },
   "dependencies": {
+    "json-stable-stringify": "^1.0.1",
     "json5": "^2.1.0",
     "node-fetch": "^2.6.0",
     "rimraf": "^2.6.3"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/poifuture/golink-gh-pages/issues"
+  },
+  "homepage": "https://github.com/poifuture/golink-gh-pages#readme",
+  "directories": {
+    "lib": "lib"
+  },
+  "keywords": []
 }

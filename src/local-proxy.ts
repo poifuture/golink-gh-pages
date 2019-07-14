@@ -120,6 +120,7 @@ const installHosts = () => {
     }
   }
 }
+
 const firstTimeStart = async (
   startupWrapperPath: string = ""
 ): Promise<void> => {
