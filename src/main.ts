@@ -205,7 +205,6 @@ const build = async () => {
 }
 
 export default () => {
-  console.log(process.argv)
   if (process.argv[2] === "install-local") {
     installlocal(process.argv[3])
     return

@@ -19,12 +19,6 @@ var server = http.createServer(function(req, res) {
 
 server.listen(80);
 `
-const StartupReg = `Windows Registry Editor Version 5.00
-
-[HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run]
-
-"GoLink"="\\"node %ESCAPESERVERJSPATH%\\""
-`
 
 const prepare = (golinkHost: string = DefaultHost) => {
   if (process.platform !== "win32" && fs.existsSync("/mnt/c")) {
@@ -32,17 +26,27 @@ const prepare = (golinkHost: string = DefaultHost) => {
       "WSL detected. Abort. Installation needs to inject Windows registry. Please run in powershell."
     )
   }
-  const protoHost = golinkHost.startsWith("http")
+  const qualifiedHost = golinkHost.startsWith("http")
     ? golinkHost
     : "http://" + golinkHost
-  const serverJs = LocalServerJs.replace(DefaultHost, golinkHost)
+  const serverJs = LocalServerJs.replace(DefaultHost, qualifiedHost)
   const serverJsPath = path.join(os.homedir(), "golink-local.js")
   fs.writeFileSync(serverJsPath, serverJs)
   switch (process.platform) {
     case "win32": {
-      const escapeServerJsPath = serverJsPath.replace(/[\\]/g, "\\\\")
-      const reg = StartupReg.replace("%ESCAPESERVERJSPATH%", escapeServerJsPath)
-      fs.writeFileSync(path.join(os.homedir(), "golink-local.reg"), reg)
+      const startupWrapper = `CreateObject("Wscript.Shell").Run "node ${serverJsPath}", 0`
+      fs.writeFileSync(
+        path.join(
+          process.env.APPDATA,
+          "Microsoft",
+          "Windows",
+          "Start Menu",
+          "Programs",
+          "Startup",
+          "golink-local.vbs"
+        ),
+        startupWrapper
+      )
       break
     }
     case "linux": {
@@ -64,7 +68,6 @@ export default (golinkHost: string = DefaultHost) => {
   try {
     switch (process.platform) {
       case "win32": {
-        exec(path.join(os.homedir(), "golink-local.reg"))
         fs.writeFileSync(
           "c:\\Windows\\System32\\Drivers\\etc\\hosts",
           "\r\n127.0.0.1 go\r\n",
