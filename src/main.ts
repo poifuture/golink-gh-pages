@@ -69,6 +69,8 @@ const initRepo = () => {
       "entries.json",
       stringify(
         {
+          "new-link":
+            "https://github.com/poigolink/golink.poi.dev/edit/master/entries.json",
           google: "https://www.google.com/",
           "google-maps": "https://maps.google.com/",
           youtube: "https://www.youtube.com/",
