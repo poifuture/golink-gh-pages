@@ -62,6 +62,7 @@ Add your entry in `entries.json`
 
 ```json
 {
+  "new-link": "https://github.com/poigolink/golink.poi.dev/edit/master/entries.json",
   "G": "https://www.google.com/",
   "YT": "https://www.youtube.com/watch?v="
 }
@@ -103,8 +104,7 @@ Private repo is okay.
 ### Set up custom domain
 
 The good choice is `https://go.corp.example.com`. https setup would be good for
-security reason. You may want to simply forward your short domain to the secure
-long domain. You can follow the
+security reason. You can follow the
 [official GitHub Pages wiki](https://help.github.com/en/articles/using-a-custom-domain-with-github-pages)
 to set up your custom domain.
 
@@ -112,21 +112,23 @@ to set up your custom domain.
 
 Usually, your dns provider allows you to set 301 redirect (a.k.a forwarding) for
 your apex domain. (also known as root zone, host "@", etc.). In our live demo,
-the forwarding is set from "go-l.ink" to "https://golink.poi.dev" at
-[poigolink repo](https://github.com/poigolink/golink.poi.dev). So that you can
-access your golink globalwide. Try [go-l.ink/google](http://go-l.ink/google)
+the forwarding is set from "http://go-l.ink/" to "https://golink.poi.dev"
+(hosted in our [demo repo](https://github.com/poigolink/golink.poi.dev) ). So
+that you can access your golink globalwide. Try
+[go-l.ink/google](http://go-l.ink/google)
 
 ### Set up continuous delivery
 
-**Security alert!** If you use default setup, `everyone` would be able to push
-any commits as your identity to GitHub
+> **Security alert!** If you use default setup, **everyone** would be able to
+> push any commits as your identity to GitHub
 
 Continuous delivery is used to build the entry when anyone is modifing
 `entries.json`. By default, a Circle CI config is already provided in the repo.
 All you need to do is enabling your repo in Circle CI and grant write/push
 permission.
 
-**The user key setup is dangerous, check Circle CI docs for r/w deploy key.**
+> Again, **the user key is dangerous**. Check Circle CI docs for read/write repo
+> key (deploy key) setup.
 
 Grant Circle CI a user key at Circle CI -> Settings -> Permissons -> SSH Keys
 
