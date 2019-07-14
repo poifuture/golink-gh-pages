@@ -4,51 +4,55 @@ A simple static url shortner hosted on github pages. All the data is stored in
 the github repo. Private github repo is supported. External users without github
 repo access won't see the data.
 
+## Live demo
+
+- Accessable all around the world
+  - http://go-l.ink/golink-intro
+  - http://go-l.ink/google
+  - http://go-l.ink/youtube/NasyGUeNMTs
+- If you have dns installed.
+  - [go/golink-intro](http://go/golink-intro)
+  - [go/google](http://go/google)
+  - [go/youtube/NasyGUeNMTs](http://go/youtube/NasyGUeNMTs)
+
+Live demo is located at http://go-l.ink/github-golink-demo
+
 ## Why github pages
 
-Github pages ~~is free~~ has a better SLA and minimum maintainance effort.
+Github pages ~~is free~~ provides the easiest way to maintain a service with no
+cost (time or money).
+
+This project is inspired by [golinks.io](http://golinks.io). You can try it if a
+private Github Pages repo is not a requirement for you.
 
 ## Quick Start
-
-1. Fork poifuture/go.poi.dev
-1. Setup gh pages with custom domain
-1. (Optional) Create Circle CI workflow.
-1. (Optional) Setup "go" TLD to enable go/link in the browser.
-
-## Install
 
 > You need [nodejs][nodejs] installed to start. It will bring you `node`, `npm`
 > and `npx` commands.
 
-First, create an empty github repo to hold the site.
+1. Create a new `go.yourdomain.com` repo in github with `{gitignore: Node}`
+2. Clone the repo, init with golink-gh-pages, and push back to github.
 
-> Suggestion, use github website to create a repo named as `go.yourdomain.com`
-> and clone it to your local workspace.
+   ```bash
+      git clone git://github.com/yourorg/go.yourdomain.com
+      cd go.yourdomain.com
+      # npx will automatically download the golink init script in tmp folder.
+      npx golink-gh-pages
+      git add --all && commit -m "Init golink"
+      git push origin master
+   ```
 
-```bash
-mkdir my-golink
-cd my-golink
-git init
-```
+3. Enable Github Pages on `master/docs` with your `go.yourdomain.com` domain.
+4. (Optional) Setup Circle CI workflow.
+5. (Optional) Setup "go" TLD to enable go/link in the browser.
 
-Next, make this github repo a npm package. And initialize this golink package.
+## Developing
 
-```bash
-npm init
-npm install --save-dev golink-gh-pages
-npx golink
-```
-
-Now, test your setup in a simple server.
-
-```bash
-npm install --save-dev serve
-npx serve docs
-```
-
-Open browser and navigate to
-[localhost:5000/google](http://localhost:5000/google). You'll be able to see a
-refresh to google homepage.
+Simply `npx serve docs` will simulate a github pages server on localhost 5000
+port. `npm run start` script will rebuild static entries first before serving
+the sites. After server is started, open browser and navigate to
+[localhost:5000/google](http://localhost:5000/google). You'll be able to see the
+broswer is refreshing to google homepage.
 
 ## Usage
 
@@ -56,18 +60,23 @@ Add your entry in `entries.json`
 
 ```json
 {
-  "YT": "https://www.youtube.com/watch"
+  "g": "https://www.google.com/",
+  "YT": "https://www.youtube.com/watch?v="
 }
 ```
+
+> Note the tailing slash "/" is important. It allows `go/g/search?q=123` to be
+> translated to `https://www.google.com/search?q=123`. Without tailing slash, it
+> will become `https://www.google.comsearch?q=123`
 
 Then rebuild the project. New static entries will be created in the docs folder.
 
 ```bash
-npx golink
-npx serve docs
+npm build
+npm start
 ```
 
-Verify [localhost:5000/yt?v=NasyGUeNMTs](http://localhost:5000/yt?v=NasyGUeNMTs)
+Verify [localhost:5000/yt/NasyGUeNMTs](http://localhost:5000/yt/NasyGUeNMTs)
 
 In general, if more data is included in the query string. The golink will strip
 the key and append the remain query to the targeted location. (e.g.
@@ -77,14 +86,14 @@ will be translated to
 
 ## Productionlize
 
-To make the golink useful in the real world, the following setup is needed.
+To make the golink useful in the real world, the following steps are
+recommended.
 
 ### Enable Github Pages
 
 Of course!
 
-Open github.com -> your repo -> Settings -> GitHub Pages -> Source: master
-branch docs folder.
+Open github.com -> your repo -> Settings -> GitHub Pages -> Source: master/docs
 
 Private repo is okay.
 
@@ -95,6 +104,14 @@ security reason. You may want to simply forward your short domain to the secure
 long domain. You can follow the
 [official GitHub Pages wiki](https://help.github.com/en/articles/using-a-custom-domain-with-github-pages)
 to set up your custom domain.
+
+### Set up short url
+
+Usually, your dns provider allows you to set 301 redirect (a.k.a forwarding) for
+your apex domain. (also known as root zone, host "@", etc.). In our live demo,
+the forwarding is set from "go-l.ink" to "https://golink.poi.dev" at
+[poigolink repo](https://github.com/poigolink/golink.poi.dev). So that you can
+access your golink globalwide. Try [go-l.ink/google](http://go-l.ink/google)
 
 ### Set up continuous delivery
 
@@ -110,29 +127,42 @@ permission.
 
 Grant Circle CI a user key at Circle CI -> Settings -> Permissons -> SSH Keys
 
-### Set up a local redirect server for "go" TLD
+### Set up "go" TLD
 
 This convinient setup will unlock your productivity significantly. You'll be
 able to access the doc you remember in your brain by simply typing
 `go/an-awesome-doc` in the browser. See a great document by
-[golinks.io][history]. To set up, simply run
+[golinks.io][history]. To achieve this, there are 3 options.
+
+#### Option 1: Run a redirection server on everyone's port 80
+
+To set up, simply run
 
 ```bash
 npx golink-gh-pages install-local-dns https://go.yourdomain.com
 ```
 
-> Note: This set up will occupy your port 80 forever.
-
-Restart workstation to let startup process start the server. And try simply
-typing go/google in your browser. (Enter http qualified path for the first time,
-http://go/google). You are all set!
+If the setup is successful, open http://go/google will redirect to google. Next
+time, simply type go/ to your document without searching everywhere.
 
 The installation will create "~/golink-local.js", a 3-line pure nodejs redirect
 server. Then add a startup registry to run this server at port 80. Finally, the
 installation will write a "go" TLD entry to 127.0.0.1, which allows the browser
 to redirect the "go" domain same as "localhost"
 
-## Config
+#### Option 2: Run a org wide redirection server at a static ip port 80
+
+Since port 80 is required. It would bring extra maintainance effort for this
+server. AWS Elastic IP + AWS Lambda is probably a good setup.
+
+#### Option 3: Run a org wide dns server
+
+> Not all dns server supports this setup
+
+Simply add a CNAME from "go" TLD to yourorg.github.io Growing teams will gain
+other benefits from a private dns at the same time.
+
+## Configs
 
 Config file is located at `golink.config.json`. The following options are used
 to configure the build process.

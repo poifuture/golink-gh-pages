@@ -6,7 +6,10 @@
   "bin": {
     "golink": "./main.js"
   },
-  "repository": "https://github.com/poifuture/golink-gh-pages.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/poifuture/golink-gh-pages.git"
+  },
   "author": "Nagi <nagi@poifuture.com>",
   "license": "MIT",
   "scripts": {
@@ -29,5 +32,13 @@
     "json5": "^2.1.0",
     "node-fetch": "^2.6.0",
     "rimraf": "^2.6.3"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/poifuture/golink-gh-pages/issues"
+  },
+  "homepage": "https://github.com/poifuture/golink-gh-pages#readme",
+  "directories": {
+    "lib": "lib"
+  },
+  "keywords": []
 }

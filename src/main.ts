@@ -2,6 +2,7 @@ import fs from "fs"
 import rimraf from "rimraf"
 import JSON5 from "json5"
 import LocalProxy from "./local-proxy"
+import { execSync } from "child_process"
 
 const getFuzzyKey = (key: string): string => {
   return key.replace(/[^a-zA-Z0-9]*/g, "").toLowerCase()
@@ -41,6 +42,26 @@ const resolveConfig = (): ConfigType => {
 }
 
 const initRepo = () => {
+  if (!fs.existsSync("package.json")) {
+    fs.writeFileSync(
+      "package.json",
+      JSON.stringify(
+        {
+          scripts: {
+            build: "golink",
+            start: "npm build && serve docs",
+          },
+          devDependencies: {
+            "golink-gh-pages": "^1.20190712.2",
+            serve: "^11.1.0",
+          },
+        },
+        null,
+        2
+      )
+    )
+    execSync("npm init -y")
+  }
   if (!fs.existsSync("entries.json")) {
     fs.writeFileSync(
       "entries.json",
