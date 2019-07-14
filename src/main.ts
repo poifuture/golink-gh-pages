@@ -69,6 +69,8 @@ const initRepo = () => {
       "entries.json",
       stringify(
         {
+          golink: "https://github.com/poifuture/golink-gh-pages",
+          "golink-demo": "https://github.com/poigolink/golink.poi.dev",
           "golink-intro":
             "https://medium.com/@golinks/the-full-history-of-go-links-and-the-golink-system-cbc6d2c8bb3",
           "new-link":
