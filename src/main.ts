@@ -55,7 +55,7 @@ const initRepo = () => {
             start: "npm build && serve docs",
           },
           devDependencies: {
-            "golink-gh-pages": "^1.20190712.2",
+            "golink-gh-pages": "^1.20190714.4",
             serve: "^11.1.0",
           },
         },
@@ -69,11 +69,12 @@ const initRepo = () => {
       "entries.json",
       stringify(
         {
+          "golink-intro":
+            "https://medium.com/@golinks/the-full-history-of-go-links-and-the-golink-system-cbc6d2c8bb3",
           "new-link":
             "https://github.com/poigolink/golink.poi.dev/edit/master/entries.json",
           google: "https://www.google.com/",
-          "google-maps": "https://maps.google.com/",
-          youtube: "https://www.youtube.com/",
+          youtube: "https://www.youtube.com/watch?v=",
         },
         { space: 2 }
       )
@@ -98,6 +99,9 @@ const initDocs = ({
   unsafe?: boolean
   homepage?: string
 }) => {
+  if (fs.existsSync("docs/CNAME")) {
+    fs.copyFileSync("docs/CNAME", "CNAME")
+  }
   if (cleanStart) {
     if (fs.existsSync("docs")) {
       rimraf.sync("docs")
@@ -105,6 +109,9 @@ const initDocs = ({
   }
   if (!fs.existsSync("docs")) {
     fs.mkdirSync("docs")
+    if (fs.existsSync("CNAME")) {
+      fs.copyFileSync("CNAME", "docs/CNAME")
+    }
   }
   if (!fs.existsSync("docs/entry")) {
     fs.mkdirSync("docs/entry")
