@@ -181,6 +181,10 @@ all symbols will be ignored. (e.g. `go/MyGReatBLOg5` can hit the
 redirection. This will improve the redirection performance in github pages. But
 it doesn't pass the query string to the targeted site.
 
+`sort` (default `true`): Sort the entries every rebuild.
+
+`homepage`: The jump link when no path is provided.
+
 ## Alternatives
 
 [golinks.io][golinks.io] is a reliable SaaS platform to provide the golinks to

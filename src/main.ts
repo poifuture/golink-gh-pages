@@ -13,6 +13,7 @@ interface ConfigType {
   cleanStart: boolean
   fuzzy: boolean
   jekyll301: boolean
+  sort: boolean
   unsafe: boolean
   homepage: string
 }
@@ -25,6 +26,7 @@ const DefaultConfig: ConfigType = {
   cleanStart: false,
   fuzzy: true,
   jekyll301: false,
+  sort: true,
   unsafe: false,
   homepage: "https://github.com/poifuture/golink-gh-pages/",
 }
@@ -121,20 +123,23 @@ const initDocs = ({
   fs.writeFileSync("docs/index.html", templateHtml)
 }
 
-const sortEntries = () => {
+const readEntries = ({ sort = DefaultConfig.sort }: { sort?: boolean }) => {
   const entriesString = fs.readFileSync("entries.json", "utf8")
   const entries = JSON5.parse(entriesString)
-
-  fs.writeFileSync("entries.json", stringify(entries, { space: 2 }))
+  if (sort) {
+    fs.writeFileSync("entries.json", stringify(entries, { space: 2 }))
+  }
   return entries
 }
 
 const resolveRichEntries = ({
-  fuzzy = true,
+  fuzzy = DefaultConfig.fuzzy,
+  sort = DefaultConfig.sort,
 }: {
-  fuzzy: boolean
+  fuzzy?: boolean
+  sort?: boolean
 }): { [s: string]: RichEntryType } => {
-  const entries = sortEntries()
+  const entries = readEntries({ sort: sort })
   const richEntries = {}
   const fuzzyPointers = {}
   for (const key in entries) {
@@ -220,7 +225,10 @@ const build = async () => {
     unsafe: config.unsafe,
     homepage: config.homepage,
   })
-  const richEntries = resolveRichEntries({ fuzzy: config.fuzzy })
+  const richEntries = resolveRichEntries({
+    fuzzy: config.fuzzy,
+    sort: config.sort,
+  })
   await buildEntries(richEntries, { fuzzy: config.fuzzy })
   if (config.jekyll301) {
     await buildJekyll(richEntries)
