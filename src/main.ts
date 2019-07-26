@@ -6,7 +6,7 @@ import { execSync } from "child_process"
 import LocalProxy from "./local-proxy"
 
 const getFuzzyKey = (key: string): string => {
-  return key.replace(/[^a-zA-Z0-9]*/g, "").toLowerCase()
+  return key.replace(/[^a-zA-Z0-9@]*/g, "").toLowerCase()
 }
 
 interface ConfigType {
