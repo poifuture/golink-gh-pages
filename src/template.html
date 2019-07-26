@@ -8,7 +8,7 @@
     // homepage jump
   } else {
     /* fuzzy start */
-    key = key.replace(/[^a-zA-Z0-9]*/g, "").toLowerCase()
+    key = key.replace(/[^a-zA-Z0-9@]*/g, "").toLowerCase()
     /* fuzzy end */
     console.log("input: ", key, remain)
     fetch("/entry/" + key)
